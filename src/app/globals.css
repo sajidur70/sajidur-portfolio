@@ -1,1 +1,236 @@
 @import "tailwindcss";
+
+/* Dark mode is ON when <html> has class="dark" (next-themes adds it) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Connect the Geist font (loaded in layout.tsx) to Tailwind's font-sans / font-mono classes */
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* "animate-fade-up" class: fade in + slide up, in pure CSS.
+   Used in the Hero so it shows right away, without waiting for JavaScript. */
+@theme {
+  --animate-fade-up: fade-up 0.6s ease-out both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Navbar links like href="#about" scroll smoothly instead of jumping */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Dark mode default ("Graphite" palette): near-black to dark grey fade,
+   with a faint white glow top-left.
+   All colors are Tailwind's: var(--color-...) is the same color as the class
+   (e.g. --color-zinc-800 = bg-zinc-800), and --alpha(... / 5%) makes it see-through.
+   "fixed" keeps the gradient still while the page scrolls. */
+.dark body {
+  background-image:
+    radial-gradient(
+      circle at 15% 10%,
+      --alpha(var(--color-white) / 5%),
+      transparent 45%
+    ),
+    linear-gradient(
+      160deg,
+      var(--color-neutral-950) 0%,
+      var(--color-zinc-800) 100%
+    );
+  background-attachment: fixed;
+}
+
+/* Other dark palettes. PalettePicker sets <body data-bg="ocean"> etc.
+   [data-bg="..."] makes these rules more specific, so they win over the default above. */
+.dark body[data-bg="midnight"] {
+  background-image:
+    radial-gradient(
+      circle at 15% 10%,
+      --alpha(var(--color-cyan-400) / 12%),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 85% 90%,
+      --alpha(var(--color-violet-500) / 12%),
+      transparent 45%
+    ),
+    linear-gradient(
+      160deg,
+      var(--color-zinc-950) 0%,
+      var(--color-slate-950) 100%
+    );
+}
+.dark body[data-bg="ocean"] {
+  background-image:
+    radial-gradient(
+      circle at 15% 10%,
+      --alpha(var(--color-cyan-400) / 20%),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 90%,
+      --alpha(var(--color-teal-400) / 15%),
+      transparent 50%
+    ),
+    linear-gradient(
+      160deg,
+      var(--color-slate-950) 0%,
+      var(--color-cyan-950) 100%
+    );
+}
+.dark body[data-bg="space"] {
+  background-image:
+    radial-gradient(
+      circle at 15% 10%,
+      --alpha(var(--color-cyan-400) / 12%),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 90%,
+      --alpha(var(--color-indigo-500) / 25%),
+      transparent 50%
+    ),
+    linear-gradient(
+      160deg,
+      var(--color-slate-950) 0%,
+      var(--color-indigo-950) 100%
+    );
+}
+.dark body[data-bg="purple"] {
+  background-image:
+    radial-gradient(
+      circle at 15% 10%,
+      --alpha(var(--color-violet-500) / 25%),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 90%,
+      --alpha(var(--color-pink-500) / 15%),
+      transparent 50%
+    ),
+    linear-gradient(
+      160deg,
+      var(--color-zinc-950) 0%,
+      var(--color-purple-950) 100%
+    );
+}
+.dark body[data-bg="aurora"] {
+  background-image:
+    radial-gradient(
+      circle at 15% 10%,
+      --alpha(var(--color-emerald-400) / 20%),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 90%,
+      --alpha(var(--color-cyan-400) / 15%),
+      transparent 50%
+    ),
+    linear-gradient(
+      160deg,
+      var(--color-slate-950) 0%,
+      var(--color-cyan-950) 50%,
+      var(--color-emerald-950) 100%
+    );
+}
+
+/* ===== Hero effects =====
+   EffectPicker sets <body data-fx="glow"> etc. Each effect animates
+   my name (.hero-name, each letter = .hero-letter), my title (.hero-title)
+   and my photo ring (.hero-photo). Only if the visitor allows motion. */
+@media (prefers-reduced-motion: no-preference) {
+  /* Glow: soft pulsing cyan light */
+  body[data-fx="glow"] .hero-name {
+    animation: fx-glow-text 2s ease-in-out infinite;
+  }
+  body[data-fx="glow"] .hero-title {
+    animation: fx-glow-drop 2s ease-in-out infinite;
+  }
+  body[data-fx="glow"] .hero-photo {
+    animation: fx-glow-ring 2s ease-in-out infinite;
+  }
+
+  /* Bounce: letters jump one by one, title pops, photo floats */
+  body[data-fx="bounce"] .hero-letter {
+    animation: fx-jump 2s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.1s);
+  }
+  body[data-fx="bounce"] .hero-title {
+    animation: fx-pop 2s ease-in-out infinite;
+  }
+  body[data-fx="bounce"] .hero-photo {
+    animation: fx-float 3s ease-in-out infinite;
+  }
+}
+
+@keyframes fx-glow-text {
+  0%, 100% { text-shadow: 0 0 4px --alpha(var(--color-cyan-400) / 30%); }
+  50% {
+    text-shadow:
+      0 0 12px --alpha(var(--color-cyan-400) / 90%),
+      0 0 32px --alpha(var(--color-cyan-400) / 60%);
+  }
+}
+@keyframes fx-glow-drop {
+  0%, 100% { filter: drop-shadow(0 0 2px --alpha(var(--color-cyan-400) / 30%)); }
+  50% { filter: drop-shadow(0 0 10px --alpha(var(--color-cyan-400) / 90%)); }
+}
+@keyframes fx-glow-ring {
+  0%, 100% { box-shadow: 0 0 10px --alpha(var(--color-cyan-400) / 40%); }
+  50% { box-shadow: 0 0 40px 8px --alpha(var(--color-cyan-400) / 80%); }
+}
+@keyframes fx-jump {
+  0%, 30%, 100% { transform: translateY(0); }
+  15% { transform: translateY(-0.35em); }
+}
+@keyframes fx-pop {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+@keyframes fx-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+/* Draw: my name as SVG outlines (DrawnName.tsx), animated by anime.js in EffectPicker.
+   Hidden unless the "Draw" effect is on; then the normal letters are hidden instead. */
+.hero-name-draw {
+  display: none;
+  height: 1.14em; /* same size as the text: the SVG is 1.14em tall (ascender + descender) */
+  width: auto;
+  /* Negative margins make it take 1em of space (like the text), so the heading
+     doesn't get taller. vertical-align puts its bottom 0.22em below the baseline. */
+  margin-block: -0.07em;
+  vertical-align: -0.15em;
+  fill-opacity: 0; /* start as outline only; anime.js fills it in */
+}
+body[data-fx="draw"] .hero-name-draw {
+  display: inline-block;
+}
+body[data-fx="draw"] .hero-name-text {
+  display: none;
+}
+/* The circle line around my photo: same idea, hidden unless "Draw" is on */
+.hero-photo-draw {
+  display: none;
+  filter: drop-shadow(0 0 4px currentColor); /* soft glow around the line */
+}
+body[data-fx="draw"] .hero-photo-draw {
+  display: block;
+}
+
+/* So the sticky navbar doesn't cover section titles after scrolling */
+section {
+  scroll-margin-top: 80px;
+}
