@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
+import Skills from "@/components/Skills";
 
 // The home page: puts all sections in order.
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
       <main>
         <Hero />
         <About />
+        <Skills />
       </main>
     </>
   );
