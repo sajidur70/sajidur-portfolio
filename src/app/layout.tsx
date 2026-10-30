@@ -28,6 +28,10 @@ export const metadata: Metadata = {
     template: `%s | ${personal.name}`,
   },
   description: `Portfolio of ${personal.name}, a ${personal.title} from ${personal.location}. ${personal.intro}`,
+  // Tells Google the official URL of my page: siteUrl + "/"
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: `${personal.name} | ${personal.title}`,
     description: personal.intro,
